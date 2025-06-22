@@ -66,7 +66,7 @@ public class Main{
                 String character = scanner.nextLine().toLowerCase();
 
                 if (checkValidInput(character)){
-                    System.out.println("");
+                    System.out.println(" ");
                     System.out.println(red + "Ответ может содержать только одну букву русского алфавита" + reset);
                     System.out.println("Допустимые сивмолы: " + green + "абвгдеёжзийклмнопрстуфхцчшщъыьэюя" +reset);
                     continue;
@@ -79,7 +79,7 @@ public class Main{
                             Попробуйте ввести другую.""" + reset);
                     continue;
                 }
-                addAnwerToList(character, letters);
+                addAnswerToList(character, letters);
 
                 if (checkCharacter(word, character) == 1){
                     System.out.println(" ");
@@ -109,20 +109,8 @@ public class Main{
             }
     }
 
-    private  static boolean checkValidStartGameInput(String input){
-        if (!input.toLowerCase().equals("да") && !input.toLowerCase().equals("нет")){
-            return true;
-        }   else {
-            return false;
-        }
-    }
-
     private static boolean checkValidInput(String character){
-        if (!alphabet.contains(character) || !(character.length() == 1)){
-            return true;
-        }   else{
-            return false;
-        }
+        return !alphabet.contains(character) || !(character.length() == 1);
     }
 
     private static String makeWord () throws FileNotFoundException {
@@ -132,7 +120,7 @@ public class Main{
         List<String> list = new ArrayList<>();
 
         while (scan.hasNextLine()){
-            list.add(scan.nextLine().toString());
+            list.add(scan.nextLine());
         }
 
         Random random = new Random();
@@ -143,8 +131,7 @@ public class Main{
     }
 
     private static StringBuilder makeShadow (String word) throws FileNotFoundException{
-        StringBuilder shadow = new StringBuilder("_".repeat(word.length()));
-        return shadow;
+        return new StringBuilder("_".repeat(word.length()));
     }
 
     private static Integer checkCharacter(String word, String character){
@@ -155,7 +142,7 @@ public class Main{
         }
     }
 
-    private static StringBuilder addCharacterToShadow(String character, StringBuilder shadow, String word){
+    private static void addCharacterToShadow(String character, StringBuilder shadow, String word){
         char symbol = character.charAt(0);
 
         for (int inx = 0; inx < word.length(); inx ++){
@@ -163,12 +150,10 @@ public class Main{
                 shadow.setCharAt(inx, symbol);
             }
         }
-        return shadow;
     }
 
-    private static List<String> addAnwerToList(String character, List<String> letters){
+    private static void addAnswerToList(String character, List<String> letters){
         letters.add(character);
-        return letters;
     }
 
     private static void gallowsArts(int hp, StringBuilder shadow, String word){

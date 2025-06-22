@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -9,57 +10,64 @@ public class Main{
 
     private static Scanner scanner = new Scanner(System.in);
     private static String alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+    private static String reset = "\u001B[0m";
+    private static String red = "\u001B[31m";
+    private static String green = "\u001B[32m";
+    private static String yellow = "\u001B[93m";
 
     public static void main(String[] args) throws FileNotFoundException {
-        startGaameLoop();
+        startGameLoop();
     }
 
-    public static void startGaameLoop () throws FileNotFoundException{
+    private static void startGameLoop () throws FileNotFoundException{
 
         System.out.println("Начать игру?");
         System.out.println("да/нет");
 
         while (scanner.nextLine().toLowerCase().equals("да")){
 
-            System.out.println("Допустимые сивмолы: абвгдеёжзийклмнопрстуфхцчшщъыьэюя");
+            System.out.println("Допустимые сивмолы: " + green + "абвгдеёжзийклмнопрстуфхцчшщъыьэюя" + reset);
 
             String word = makeWord();
             StringBuilder shadow = makeShadow(word);
             List<String> letters = new ArrayList<>();
-
             int hp = 6;
-            gallowsArts(hp, shadow, word);
 
             //System.out.println(word);  //     <------------------------ отображает загадонное слово в начале игры
 
             while (hp > 0 & shadow.toString().contains("_")){
 
+                gallowsArts(hp, shadow, word);
+                System.out.println("Уже введенные буквы: " + green + String.join(", ", letters) + reset);
                 System.out.print("Введите букву: ");
+
                 String character = scanner.nextLine().toLowerCase();
 
                 if (checkValidInput(character)){
-                    System.out.println("Такой символ не допустим");
+                    System.out.println("");
+                    System.out.println(red + "Ответ может содержать только одну букву русского алфавита" + reset);
+                    System.out.println("Допустимые сивмолы: " + green + "абвгдеёжзийклмнопрстуфхцчшщъыьэюя" +reset);
                     continue;
                 }
 
                 if(letters.contains(character)){
-                    System.out.println("""
+                    System.out.println(yellow +"""
+                            
                             Вы уже вводили эту букву.
-                            Попробуйте ввести другую.
-                            """);
+                            Попробуйте ввести другую.""" + reset);
                     continue;
                 }
                 addAnwerToList(character, letters);
 
                 if (checkCharacter(word, character) == 1){
                     System.out.println(" ");
-                    System.out.println(addCharacterToShadow(character, shadow, word));
+                    addCharacterToShadow(character, shadow, word);
                 }
 
                 else if (checkCharacter(word, character) == -1 & hp > 1){
                     hp -=1;
-                    gallowsArts(hp, shadow, word);
-                    System.out.print("Такой буквы нет. ");
+                    System.out.println(" ");
+                    System.out.println(yellow + "Такой буквы нет. " + reset);
                 }
                 else if (checkCharacter(word, character) == -1 & hp == 1){
                     hp -=1;
@@ -67,27 +75,40 @@ public class Main{
                 }
             }
             if (!shadow.toString().contains("_")){
-                System.out.println("""
+                System.out.println(green + """
                         
                         Вы ПОБЕДИЛИ!!!
                         
-                        Играть ещё раз?
-                            да/нет""");
+                        """  + reset);
+                System.out.println("""
+                        Сыграть ещё?
+                          да/нет
+                        """);
             }
 
+        }
 
+
+
+
+    }
+    private  static boolean checkValidStartGameInput(String input){
+        if (!input.toLowerCase().equals("да") && !input.toLowerCase().equals("нет")){
+            return true;
+        }   else {
+            return false;
         }
     }
 
-    public static boolean checkValidInput(String character){
-        if (!alphabet.contains(character)){
+    private static boolean checkValidInput(String character){
+        if (!alphabet.contains(character) || !(character.length() == 1)){
             return true;
         }   else{
             return false;
         }
     }
 
-    public static String makeWord () throws FileNotFoundException {
+    private static String makeWord () throws FileNotFoundException {
 
         File file = new File("src/dictionary.txt");
         Scanner scan = new Scanner(file);
@@ -104,16 +125,12 @@ public class Main{
         return word;
     }
 
-    public static StringBuilder makeShadow (String word) throws FileNotFoundException{
-
+    private static StringBuilder makeShadow (String word) throws FileNotFoundException{
         StringBuilder shadow = new StringBuilder("_".repeat(word.length()));
-
         return shadow;
     }
 
-    public static Integer checkCharacter(String word, String character){
-        // есть или нет?
-
+    private static Integer checkCharacter(String word, String character){
         if (word.contains(character)){
             return 1;
         }  else {
@@ -121,8 +138,7 @@ public class Main{
         }
     }
 
-    public static StringBuilder addCharacterToShadow(String character, StringBuilder shadow, String word){
-
+    private static StringBuilder addCharacterToShadow(String character, StringBuilder shadow, String word){
         char symbol = character.charAt(0);
 
         for (int inx = 0; inx < word.length(); inx ++){
@@ -133,12 +149,12 @@ public class Main{
         return shadow;
     }
 
-    public static List<String> addAnwerToList(String character, List<String> letters){
+    private static List<String> addAnwerToList(String character, List<String> letters){
         letters.add(character);
         return letters;
     }
 
-    public static void gallowsArts(int hp, StringBuilder shadow, String word){
+    private static void gallowsArts(int hp, StringBuilder shadow, String word){
         if (hp == 6){
             System.out.println("""
                     _________
@@ -151,7 +167,7 @@ public class Main{
                     |
                     |_________
                     """);
-            System.out.println(shadow);
+            System.out.println(green + shadow + reset);
         }
         if (hp == 5){
             System.out.println("""
@@ -165,7 +181,7 @@ public class Main{
                     |
                     |_________
                     """);
-            System.out.println(shadow);
+            System.out.println(green + shadow + reset);
         }        if (hp == 4){
             System.out.println("""
                     _________
@@ -178,7 +194,7 @@ public class Main{
                     |
                     |_________
                     """);
-            System.out.println(shadow);
+            System.out.println(green + shadow + reset);
         }        if (hp == 3){
             System.out.println("""
                     _________
@@ -191,7 +207,7 @@ public class Main{
                     |
                     |_________
                     """);
-            System.out.println(shadow);
+            System.out.println(green + shadow + reset);
         }        if (hp == 2){
             System.out.println("""
                     _________
@@ -204,7 +220,7 @@ public class Main{
                     |
                     |_________
                     """);
-            System.out.println(shadow);
+            System.out.println(green + shadow + reset);
         }        if (hp == 1){
             System.out.println("""
                     _________
@@ -217,7 +233,7 @@ public class Main{
                     |
                     |_________
                     """);
-            System.out.println(shadow);
+            System.out.println(green + shadow + reset);
         }        if (hp == 0){
             System.out.println("""
                     _________
@@ -230,8 +246,8 @@ public class Main{
                     |
                     |_________
                     """);
-            System.out.println("Вы ПРОИГРАЛИ!");
-            System.out.println(shadow + " -> " + word);
+            System.out.println(yellow + "Вы ПРОИГРАЛИ!" + reset);
+            System.out.println(yellow + shadow + reset + " --> " + green + word + reset);
             System.out.println("""
                         
                         Играть ещё раз?

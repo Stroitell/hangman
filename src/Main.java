@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -33,7 +32,12 @@ public class Main{
                 break;
             }
             else {
-                System.out.println("Некорректный ввод");
+                System.out.println(yellow + "Некорректный ответ" + reset);
+                System.out.println("""
+                        
+                        Начать игру?
+                          да/нет
+                        """);
             }
         }   while (!input.equals("нет"));
     }

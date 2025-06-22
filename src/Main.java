@@ -24,7 +24,25 @@ public class Main{
         System.out.println("Начать игру?");
         System.out.println("да/нет");
 
-        while (scanner.nextLine().toLowerCase().equals("да")){
+        String input;
+        do {
+            input = scanner.nextLine().toLowerCase();
+            if (input.equals("да")){
+                startIfYes();
+            }   else if(input.equals("нет")){
+                break;
+            }
+            else {
+                System.out.println("Некорректный ввод");
+            }
+        }   while (!input.equals("нет"));
+    }
+
+    private static void startIfAnotherAnswer(){
+        System.out.println("Неккоректный ответ");
+    }
+
+    private static void startIfYes () throws FileNotFoundException {
 
             System.out.println("Допустимые сивмолы: " + green + "абвгдеёжзийклмнопрстуфхцчшщъыьэюя" + reset);
 
@@ -85,13 +103,8 @@ public class Main{
                           да/нет
                         """);
             }
-
-        }
-
-
-
-
     }
+
     private  static boolean checkValidStartGameInput(String input){
         if (!input.toLowerCase().equals("да") && !input.toLowerCase().equals("нет")){
             return true;
